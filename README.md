@@ -50,3 +50,24 @@ Nach erfolgreichem Lauf sollte unter Releases
 erscheinen. Das Gateway führt signierte Updates nur nach expliziter
 Freigabe aus. Bestehende, an eine Profilversion gebundene Geräte
 dürfen nicht stillschweigend migriert werden.
+
+
+## Shelly TopAC – vorbereitete Katalogversion 1.2.0
+
+Das Profil `shelly_topac_rpc` beschreibt den TopAC Portable EV Charger
+für die offizielle, **lokale Shelly-X-RPC-Schnittstelle**.
+Es enthält 14 **lesende** Felder: Gesamtleistung, Gesamt- und
+Sitzungsenergie, Gesamtstrom, aktuellen Stromgrenzwert sowie Spannung,
+Strom und Leistung je Phase. Es werden nur dokumentierte
+`GetStatus`-Methoden verwendet. Das zugehörige Universal-EMS-Backend
+muss die Schema-3-Unterstützung aus `develop` enthalten.
+
+**Release erst nach bestandenem CI-Test veröffentlichen:**
+Actions → Publish signed device profiles → Run workflow →
+Branch `main`, Version `1.2.0`.
+Der vorhandene Signaturschlüssel im GitHub-Secret bleibt gültig.
+Das resultierende `profiles-v1.2.0` enthält iDM, go-e und Shelly TopAC.
+Die Installation im Gateway bleibt manuell und signaturgeprüft.
+
+Hersteller-API:
+https://shelly-api-docs.shelly.cloud/gen2/Devices/ShellyX/XT1/TopACPortableEVCharger/
