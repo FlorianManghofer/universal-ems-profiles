@@ -63,6 +63,59 @@ def validate_http_profile(profile: dict, identifier: str) -> None:
         raise SystemExit(f"Missing vehicle status check: {identifier}")
 
 
+def validate_shelly_profile(profile: dict, identifier: str) -> None:
+    """Validate only published, audited TopAC read-only field mappings."""
+    import math
+    required = {"schema_version", "id", "version", "name", "manufacturer",
+                "family", "category", "protocol", "read_only",
+                "compatibility", "description", "source", "fields"}
+    if (set(profile) != required or type(profile["schema_version"]) is not int
+            or profile["schema_version"] != 3 or profile["id"] != identifier
+            or profile["manufacturer"] != "Shelly/TopAC"
+            or profile["category"] != "wallbox"
+            or profile["protocol"] != "shelly_rpc"
+            or profile["read_only"] is not True
+            or not re.fullmatch(r"\d+\.\d+\.\d+", str(profile["version"]))):
+        raise SystemExit(f"Invalid Shelly profile: {identifier}")
+    for key in ("name", "manufacturer", "family", "description", "compatibility", "source"):
+        if not isinstance(profile[key], str) or not 1 <= len(profile[key]) <= 500:
+            raise SystemExit(f"Invalid Shelly profile metadata: {identifier}")
+    allowed = {
+        "wallbox_charging_power_w": ("phase_info", "value.total_power", "W", 1, 0, 30000),
+        "wallbox_total_energy_wh": ("phase_info", "value.total_act_energy", "Wh", 1000, 0, 1e12),
+        "wallbox_session_energy_wh": ("energy_charge", "value", "Wh", 1000, 0, 1e9),
+        "wallbox_set_current_a": ("current_limit", "value", "A", 1, 0, 32),
+        "wallbox_charge_current_a": ("phase_info", "value.total_current", "A", 1, 0, 100),
+    }
+    for phase in ("a", "b", "c"):
+        for label, unit, bound in (("voltage", "V", 300), ("current", "A", 32), ("power", "W", 12000)):
+            metric = f"wallbox_phase_{phase}_{label}_{unit.lower()}"
+            allowed[metric] = ("phase_info", f"value.phase_{phase}.{label}", unit, 1, 0, bound)
+    fields = profile["fields"]
+    if not isinstance(fields, list) or not 1 <= len(fields) <= len(allowed):
+        raise SystemExit(f"Invalid Shelly fields: {identifier}")
+    seen = set()
+    for field in fields:
+        if not isinstance(field, dict) or set(field) != {
+                "metric", "role", "path", "unit", "factor", "minimum", "maximum"}:
+            raise SystemExit(f"Invalid Shelly field: {identifier}")
+        metric = field["metric"]
+        if metric not in allowed or metric in seen:
+            raise SystemExit(f"Unapproved Shelly metric: {identifier}")
+        role, path, unit, factor, low, high = allowed[metric]
+        if ((field["role"], field["path"], field["unit"], field["factor"])
+                != (role, path, unit, factor)
+                or type(field["minimum"]) not in (int, float)
+                or type(field["maximum"]) not in (int, float)
+                or not math.isfinite(field["minimum"])
+                or not math.isfinite(field["maximum"])
+                or not low <= field["minimum"] <= field["maximum"] <= high):
+            raise SystemExit(f"Unsafe Shelly metric definition: {identifier}")
+        seen.add(metric)
+    if "wallbox_charging_power_w" not in seen:
+        raise SystemExit(f"Missing Shelly charger power: {identifier}")
+
+
 def build(version: str) -> None:
     if not re.fullmatch(r"\d+\.\d+\.\d+", version):
         raise SystemExit("Version must be semantic version x.y.z")
@@ -79,6 +132,10 @@ def build(version: str) -> None:
         if not path.is_file() or path.stat().st_size > 64_000:
             raise SystemExit(f"Missing/oversized profile: {identifier}")
         profile = json.loads(path.read_text(encoding="utf-8"))
+        if profile.get("schema_version") == 3:
+            validate_shelly_profile(profile, identifier)
+            profiles[identifier] = profile
+            continue
         if profile.get("schema_version") == 2:
             validate_http_profile(profile, identifier)
             profiles[identifier] = profile
