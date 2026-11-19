@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "id": "goe_charger_api_v2",
+  "version": "1.0.0",
+  "name": "go-e Charger – HTTP API v2 (Monitoring)",
+  "manufacturer": "go-e",
+  "family": "Charger Gemini / API v2",
+  "category": "wallbox",
+  "protocol": "http_json",
+  "read_only": true,
+  "compatibility": "Nur go-e Charger mit lokal aktivierter HTTP API v2; Firmware und Modell vor Installation prüfen. Keine Ladebefehle.",
+  "description": "Fünf lesende Messwerte zu Ladeleistung, Energie, Stromvorgabe, Fahrzeugstatus und Ladefreigabe.",
+  "source": "goecharger/go-eCharger-API-v2 – offizielle API-Dokumentation",
+  "endpoint": "/api/status",
+  "fields": [
+    {
+      "metric": "wallbox_charging_power_w",
+      "key": "nrg",
+      "index": 11,
+      "unit": "W",
+      "factor": 10,
+      "minimum": 0,
+      "maximum": 100000
+    },
+    {
+      "metric": "wallbox_total_energy_wh",
+      "key": "eto",
+      "index": null,
+      "unit": "Wh",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 1000000000000
+    },
+    {
+      "metric": "wallbox_set_current_a",
+      "key": "amp",
+      "index": null,
+      "unit": "A",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 80
+    },
+    {
+      "metric": "wallbox_vehicle_status_code",
+      "key": "car",
+      "index": null,
+      "unit": "",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 5
+    },
+    {
+      "metric": "wallbox_charge_allowed",
+      "key": "alw",
+      "index": null,
+      "unit": "",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 1
+    }
+  ]
+}
