@@ -1,0 +1,47 @@
+name: Validate profile catalog
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'cryptography>=43,<47'
+      - name: Validate and build without production signing key
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+          from cryptography.hazmat.primitives import serialization
+          import base64
+          manifest = json.load(open("catalog.json"))
+          ephemeral = Ed25519PrivateKey.generate().private_bytes(
+              encoding=serialization.Encoding.Raw,
+              format=serialization.PrivateFormat.Raw,
+              encryption_algorithm=serialization.NoEncryption(),
+          )
+          env = os.environ.copy()
+          env["PROFILE_SIGNING_KEY_B64"] = base64.b64encode(ephemeral).decode()
+          subprocess.run(
+              ["python", "scripts/release.py", "build",
+               "--version", manifest["catalog_version"]],
+              env=env, check=True,
+          )
+          bundle = json.load(open("dist/bundle.json"))
+          assert bundle["format"] == 1
+          assert set(bundle["profiles"]) == set(manifest["profiles"])
+          print("Catalog validated. Test key was ephemeral and was not published.")
+          PY
