@@ -24,3 +24,29 @@ This pilot supports read-only Modbus TCP profiles only. SunSpec's self-describin
 - GitHub public releases work without credentials. Private releases are not supported by the customer updater in this first version.
 - Gateways operate offline with the bundled/previously installed profiles. Checking and installing updates is always an explicit action.
 - The implementation does not yet perform general model discovery, cloud credential provisioning, code-signing key rotation, or per-device migration.
+
+
+## Katalog 1.1.0: Wallboxprofile
+
+Im Katalog ist neben `idm_navigator_2` (Schema 1, Modbus TCP)
+jetzt `goe_charger_api_v2` (Schema 2, read-only HTTP JSON) enthalten.
+
+Das go-e-Profil enthält ausschließlich fest freigegebene,
+nicht ausführbare Messwertzuordnungen aus der offiziellen lokalen
+go-e HTTP API v2. Es kann keine Ladefreigaben oder Ladestrombefehle
+auslösen. Das Universal-EMS-Backend benötigt die aktualisierte Version
+aus Branch `develop`, um das neue Schema zu verstehen.
+
+**Neues Release erstellen:** GitHub Actions →
+**Publish signed device profiles** → **Run workflow** →
+Branch `main`, Version `1.1.0`.
+Der bestehende GitHub-Actions-Secret
+`PROFILE_SIGNING_KEY_B64` wird unverändert weiterverwendet.
+Nicht als `1.0.0` erneut veröffentlichen und keine Schlüssel in
+Commits oder Chat-Nachrichten veröffentlichen.
+
+Nach erfolgreichem Lauf sollte unter Releases
+`profiles-v1.1.0` mit `bundle.json` und `bundle.sig`
+erscheinen. Das Gateway führt signierte Updates nur nach expliziter
+Freigabe aus. Bestehende, an eine Profilversion gebundene Geräte
+dürfen nicht stillschweigend migriert werden.
