@@ -1,8 +1,9 @@
 {
   "schema_version": 1,
-  "catalog_version": "1.0.0",
+  "catalog_version": "1.1.0",
   "profiles": [
-    "idm_navigator_2"
+    "idm_navigator_2",
+    "goe_charger_api_v2"
   ],
-  "description": "Reviewed, read-only Universal EMS device profiles. The signed release pipeline publishes bundle.json and bundle.sig."
+  "description": "Reviewed read-only Modbus schema 1 and HTTP schema 2 device profiles."
 }
