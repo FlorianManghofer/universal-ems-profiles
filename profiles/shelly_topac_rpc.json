@@ -1,0 +1,142 @@
+{
+  "schema_version": 3,
+  "id": "shelly_topac_rpc",
+  "version": "1.0.0",
+  "name": "Shelly TopAC Portable EV Charger (Monitoring)",
+  "manufacturer": "Shelly/TopAC",
+  "family": "TopAC Portable EV Charger EVE01-11R",
+  "category": "wallbox",
+  "protocol": "shelly_rpc",
+  "read_only": true,
+  "compatibility": "Shelly TopAC Portable EV Charger mit lokalem Shelly-X-RPC; keine automatische Identitätsprüfung. Ausschließlich lesend.",
+  "description": "14 lesende Werte zu Ladeleistung, Gesamt- und Sitzungsenergie, eingestelltem Ladestrom sowie Spannungen, Strömen und Leistungen je Phase.",
+  "source": "Shelly API docs: Top AC Portable EV Charger (Shelly X/XT1)",
+  "fields": [
+    {
+      "metric": "wallbox_charging_power_w",
+      "role": "phase_info",
+      "path": "value.total_power",
+      "unit": "W",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 30000
+    },
+    {
+      "metric": "wallbox_total_energy_wh",
+      "role": "phase_info",
+      "path": "value.total_act_energy",
+      "unit": "Wh",
+      "factor": 1000,
+      "minimum": 0,
+      "maximum": 1000000000000
+    },
+    {
+      "metric": "wallbox_session_energy_wh",
+      "role": "energy_charge",
+      "path": "value",
+      "unit": "Wh",
+      "factor": 1000,
+      "minimum": 0,
+      "maximum": 1000000000
+    },
+    {
+      "metric": "wallbox_set_current_a",
+      "role": "current_limit",
+      "path": "value",
+      "unit": "A",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 32
+    },
+    {
+      "metric": "wallbox_charge_current_a",
+      "role": "phase_info",
+      "path": "value.total_current",
+      "unit": "A",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 100
+    },
+    {
+      "metric": "wallbox_phase_a_voltage_v",
+      "role": "phase_info",
+      "path": "value.phase_a.voltage",
+      "unit": "V",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 300
+    },
+    {
+      "metric": "wallbox_phase_a_current_a",
+      "role": "phase_info",
+      "path": "value.phase_a.current",
+      "unit": "A",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 32
+    },
+    {
+      "metric": "wallbox_phase_a_power_w",
+      "role": "phase_info",
+      "path": "value.phase_a.power",
+      "unit": "W",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 12000
+    },
+    {
+      "metric": "wallbox_phase_b_voltage_v",
+      "role": "phase_info",
+      "path": "value.phase_b.voltage",
+      "unit": "V",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 300
+    },
+    {
+      "metric": "wallbox_phase_b_current_a",
+      "role": "phase_info",
+      "path": "value.phase_b.current",
+      "unit": "A",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 32
+    },
+    {
+      "metric": "wallbox_phase_b_power_w",
+      "role": "phase_info",
+      "path": "value.phase_b.power",
+      "unit": "W",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 12000
+    },
+    {
+      "metric": "wallbox_phase_c_voltage_v",
+      "role": "phase_info",
+      "path": "value.phase_c.voltage",
+      "unit": "V",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 300
+    },
+    {
+      "metric": "wallbox_phase_c_current_a",
+      "role": "phase_info",
+      "path": "value.phase_c.current",
+      "unit": "A",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 32
+    },
+    {
+      "metric": "wallbox_phase_c_power_w",
+      "role": "phase_info",
+      "path": "value.phase_c.power",
+      "unit": "W",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 12000
+    }
+  ]
+}
