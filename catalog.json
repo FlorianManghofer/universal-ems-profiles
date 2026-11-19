@@ -1,9 +1,10 @@
 {
   "schema_version": 1,
-  "catalog_version": "1.1.0",
+  "catalog_version": "1.2.0",
   "profiles": [
     "idm_navigator_2",
-    "goe_charger_api_v2"
+    "goe_charger_api_v2",
+    "shelly_topac_rpc"
   ],
-  "description": "Reviewed read-only Modbus schema 1 and HTTP schema 2 device profiles."
+  "description": "Reviewed read-only Modbus, HTTP JSON and Shelly RPC device profiles."
 }
