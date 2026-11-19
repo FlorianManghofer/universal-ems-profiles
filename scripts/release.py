@@ -16,6 +16,53 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
 
+def validate_http_profile(profile: dict, identifier: str) -> None:
+    """Restricted read-only go-e HTTP v2 schema. No executable mappings."""
+    required = {"schema_version", "id", "version", "name", "manufacturer",
+                "family", "category", "protocol", "read_only",
+                "compatibility", "description", "source", "endpoint", "fields"}
+    if (set(profile) != required or profile["schema_version"] != 2
+            or profile["id"] != identifier
+            or profile["manufacturer"] != "go-e"
+            or profile["category"] != "wallbox"
+            or profile["protocol"] != "http_json"
+            or profile["read_only"] is not True
+            or profile["endpoint"] != "/api/status"
+            or not re.fullmatch(r"\d+\.\d+\.\d+", str(profile["version"]))):
+        raise SystemExit(f"Invalid HTTP profile: {identifier}")
+    for key in ("name", "manufacturer", "family", "description", "compatibility", "source"):
+        if not isinstance(profile[key], str) or not 1 <= len(profile[key]) <= 500:
+            raise SystemExit(f"Invalid HTTP profile metadata: {identifier}")
+    approved = {
+        "wallbox_charging_power_w": ("nrg", 11, "W", 10, 0, 100000),
+        "wallbox_total_energy_wh": ("eto", None, "Wh", 1, 0, 1e12),
+        "wallbox_set_current_a": ("amp", None, "A", 1, 0, 80),
+        "wallbox_vehicle_status_code": ("car", None, "", 1, 0, 5),
+        "wallbox_charge_allowed": ("alw", None, "", 1, 0, 1),
+    }
+    fields = profile["fields"]
+    if not isinstance(fields, list) or not 1 <= len(fields) <= len(approved):
+        raise SystemExit(f"Invalid HTTP profile fields: {identifier}")
+    seen = set()
+    for field in fields:
+        if not isinstance(field, dict) or set(field) != {
+                "metric", "key", "index", "unit", "factor", "minimum", "maximum"}:
+            raise SystemExit(f"Invalid HTTP field structure: {identifier}")
+        metric = field["metric"]
+        if metric not in approved or metric in seen:
+            raise SystemExit(f"Unsupported HTTP metric: {identifier}")
+        key, index, unit, factor, low, high = approved[metric]
+        if (field["key"] != key or field["index"] != index
+                or field["unit"] != unit or field["factor"] != factor
+                or type(field["minimum"]) not in (int, float)
+                or type(field["maximum"]) not in (int, float)
+                or not low <= field["minimum"] <= field["maximum"] <= high):
+            raise SystemExit(f"Unsafe HTTP mapping: {identifier}")
+        seen.add(metric)
+    if "wallbox_vehicle_status_code" not in seen:
+        raise SystemExit(f"Missing vehicle status check: {identifier}")
+
+
 def build(version: str) -> None:
     if not re.fullmatch(r"\d+\.\d+\.\d+", version):
         raise SystemExit("Version must be semantic version x.y.z")
@@ -32,6 +79,10 @@ def build(version: str) -> None:
         if not path.is_file() or path.stat().st_size > 64_000:
             raise SystemExit(f"Missing/oversized profile: {identifier}")
         profile = json.loads(path.read_text(encoding="utf-8"))
+        if profile.get("schema_version") == 2:
+            validate_http_profile(profile, identifier)
+            profiles[identifier] = profile
+            continue
         if (profile.get("id") != identifier
                 or profile.get("schema_version") != 1
                 or profile.get("read_only") is not True
