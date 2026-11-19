@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "id": "idm_navigator_2",
+  "version": "1.0.0",
+  "name": "iDM Navigator 2.0 – Basiswerte",
+  "manufacturer": "iDM",
+  "family": "Navigator 2.0",
+  "category": "heat_pump",
+  "protocol": "modbus_tcp",
+  "read_only": true,
+  "compatibility": "Nur Navigator 2.0 nach Abgleich der Steuerungsgeneration und Firmware. Kein automatischer Identitätsnachweis.",
+  "description": "13 lesende Datenpunkte für Temperaturen, Warmwasser, Verdichter, Leistungsaufnahme und Betriebszustände.",
+  "source": "iDM Navigator 2.0 Modbus TCP Dokumentation (Registerliste 812170)",
+  "registers": [
+    {
+      "metric": "heat_pump_outdoor_temp_c",
+      "address": 1000,
+      "words": 2,
+      "kind": "float32_swapped",
+      "unit": "°C",
+      "factor": 1,
+      "minimum": -55,
+      "maximum": 70
+    },
+    {
+      "metric": "heat_pump_outdoor_avg_temp_c",
+      "address": 1002,
+      "words": 2,
+      "kind": "float32_swapped",
+      "unit": "°C",
+      "factor": 1,
+      "minimum": -55,
+      "maximum": 70
+    },
+    {
+      "metric": "heat_pump_fault_code",
+      "address": 1004,
+      "words": 1,
+      "kind": "uint16",
+      "unit": "",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 999
+    },
+    {
+      "metric": "heat_pump_system_mode",
+      "address": 1005,
+      "words": 1,
+      "kind": "uint16",
+      "unit": "",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 5
+    },
+    {
+      "metric": "heat_pump_smart_grid_status",
+      "address": 1006,
+      "words": 1,
+      "kind": "uint16",
+      "unit": "",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 4
+    },
+    {
+      "metric": "heat_pump_buffer_temp_c",
+      "address": 1008,
+      "words": 2,
+      "kind": "float32_swapped",
+      "unit": "°C",
+      "factor": 1,
+      "minimum": -30,
+      "maximum": 110
+    },
+    {
+      "metric": "heat_pump_dhw_bottom_temp_c",
+      "address": 1012,
+      "words": 2,
+      "kind": "float32_swapped",
+      "unit": "°C",
+      "factor": 1,
+      "minimum": -30,
+      "maximum": 110
+    },
+    {
+      "metric": "heat_pump_dhw_top_temp_c",
+      "address": 1014,
+      "words": 2,
+      "kind": "float32_swapped",
+      "unit": "°C",
+      "factor": 1,
+      "minimum": -30,
+      "maximum": 110
+    },
+    {
+      "metric": "heat_pump_flow_temp_c",
+      "address": 1050,
+      "words": 2,
+      "kind": "float32_swapped",
+      "unit": "°C",
+      "factor": 1,
+      "minimum": -30,
+      "maximum": 110
+    },
+    {
+      "metric": "heat_pump_return_temp_c",
+      "address": 1052,
+      "words": 2,
+      "kind": "float32_swapped",
+      "unit": "°C",
+      "factor": 1,
+      "minimum": -30,
+      "maximum": 110
+    },
+    {
+      "metric": "heat_pump_operating_mode",
+      "address": 1090,
+      "words": 1,
+      "kind": "uint16",
+      "unit": "",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 8
+    },
+    {
+      "metric": "heat_pump_compressor_1_status",
+      "address": 1100,
+      "words": 1,
+      "kind": "uint16",
+      "unit": "",
+      "factor": 1,
+      "minimum": 0,
+      "maximum": 1
+    },
+    {
+      "metric": "heat_pump_electrical_power_w",
+      "address": 4122,
+      "words": 2,
+      "kind": "float32_swapped",
+      "unit": "W",
+      "factor": 1000,
+      "minimum": 0,
+      "maximum": 100000
+    }
+  ]
+}
