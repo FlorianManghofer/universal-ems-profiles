@@ -81,7 +81,7 @@ def validate_shelly_profile(profile: dict, identifier: str) -> None:
         if not isinstance(profile[key], str) or not 1 <= len(profile[key]) <= 500:
             raise SystemExit(f"Invalid Shelly profile metadata: {identifier}")
     allowed = {
-        "wallbox_charging_power_w": ("phase_info", "value.total_power", "W", 1, 0, 30000),
+        "wallbox_charging_power_w": ("phase_info", "value.total_power", "W", 1000, 0, 30000),
         "wallbox_total_energy_wh": ("phase_info", "value.total_act_energy", "Wh", 1000, 0, 1e12),
         "wallbox_session_energy_wh": ("energy_charge", "value", "Wh", 1000, 0, 1e9),
         "wallbox_set_current_a": ("current_limit", "value", "A", 1, 0, 32),
@@ -90,7 +90,7 @@ def validate_shelly_profile(profile: dict, identifier: str) -> None:
     for phase in ("a", "b", "c"):
         for label, unit, bound in (("voltage", "V", 300), ("current", "A", 32), ("power", "W", 12000)):
             metric = f"wallbox_phase_{phase}_{label}_{unit.lower()}"
-            allowed[metric] = ("phase_info", f"value.phase_{phase}.{label}", unit, 1, 0, bound)
+            allowed[metric] = ("phase_info", f"value.phase_{phase}.{label}", unit, 1000 if label == "power" else 1, 0, bound)
     fields = profile["fields"]
     if not isinstance(fields, list) or not 1 <= len(fields) <= len(allowed):
         raise SystemExit(f"Invalid Shelly fields: {identifier}")
