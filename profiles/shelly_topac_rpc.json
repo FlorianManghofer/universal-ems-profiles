@@ -9,7 +9,7 @@
   "protocol": "shelly_rpc",
   "read_only": true,
   "compatibility": "Shelly TopAC Portable EV Charger mit lokalem Shelly-X-RPC; keine automatische Identitätsprüfung. Ausschließlich lesend.",
-  "description": "14 lesende Werte zu Ladeleistung, Gesamt- und Sitzungsenergie, eingestelltem Ladestrom sowie Spannungen, Strömen und Leistungen je Phase.",
+  "description": "14 lesende Werte; TopAC-RPC-Leistung in kW wird für Universal EMS zu W umgerechnet, Energie in kWh zu Wh.",
   "source": "Shelly API docs: Top AC Portable EV Charger (Shelly X/XT1)",
   "fields": [
     {
@@ -17,7 +17,7 @@
       "role": "phase_info",
       "path": "value.total_power",
       "unit": "W",
-      "factor": 1,
+      "factor": 1000,
       "minimum": 0,
       "maximum": 30000
     },
@@ -80,7 +80,7 @@
       "role": "phase_info",
       "path": "value.phase_a.power",
       "unit": "W",
-      "factor": 1,
+      "factor": 1000,
       "minimum": 0,
       "maximum": 12000
     },
@@ -107,7 +107,7 @@
       "role": "phase_info",
       "path": "value.phase_b.power",
       "unit": "W",
-      "factor": 1,
+      "factor": 1000,
       "minimum": 0,
       "maximum": 12000
     },
@@ -134,7 +134,7 @@
       "role": "phase_info",
       "path": "value.phase_c.power",
       "unit": "W",
-      "factor": 1,
+      "factor": 1000,
       "minimum": 0,
       "maximum": 12000
     }
