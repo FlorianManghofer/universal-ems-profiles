@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "catalog_version": "1.2.0",
+  "catalog_version": "1.2.1",
   "profiles": [
     "idm_navigator_2",
     "goe_charger_api_v2",
